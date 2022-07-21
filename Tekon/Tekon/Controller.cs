@@ -18,6 +18,18 @@ namespace Tekon
             }
             return false;
         }
+        public void RemoveItemRecursion(int Id, Dictionary<int, Item> Dict)
+        {
+            if (Dict.ContainsKey(Id))
+            {
+                foreach (var child in Dict[Id].ChildrenId)
+                {
+                    RemoveItemRecursion(child, Dict);
+                }
+
+                Dict.Remove(Id);
+            }
+        }
         public bool RemoveItem(int Id, Dictionary<int, Item> Dict)
         {
             if (Dict.ContainsKey(Id))
@@ -25,21 +37,8 @@ namespace Tekon
                 if (Dict[Id].ParentId != null)
                 {
                     Dict[(int)Dict[Id].ParentId].ChildrenId.Remove(Id);
-                    foreach (var child in Dict[Id].ChildrenId)
-                    {
-                        Dict[child].ParentId = Dict[Id].ParentId;
-                        Dict[(int)Dict[Id].ParentId].ChildrenId.Add(child);
-                    }
                 }
-                else
-                {
-                    foreach (var child in Dict[Id].ChildrenId)
-                    {
-                        Dict[child].ParentId = null;
-                    }
-                }
-
-                Dict.Remove(Id);
+                RemoveItemRecursion(Id, Dict);
                 return true;
             }
             return false;
