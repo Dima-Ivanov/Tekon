@@ -13,6 +13,15 @@ namespace Tekon
                 if (item.ParentId != null && Dict.ContainsKey((int)item.ParentId)) Dict[(int)item.ParentId].ChildrenId.Add(item.Id);
                 else if (item.ParentId != null && !Dict.ContainsKey((int)item.ParentId)) return false;
 
+                foreach(var child in item.ChildrenId)
+                {
+                    if (!Dict.ContainsKey(child) || Dict[child].ParentId != null) return false;
+                }
+                foreach (var child in item.ChildrenId)
+                {
+                    Dict[child].ParentId = item.Id;
+                }
+
                 Dict.Add(item.Id, item);
                 return true;
             }
@@ -47,18 +56,17 @@ namespace Tekon
         {
             if (Dict.ContainsKey(item.Id))
             {
-                if (Dict[item.Id].ParentId != null)
+                if (item.ParentId == null || (item.ParentId != null && Dict.ContainsKey((int)item.ParentId)))
                 {
-                    Dict[(int)Dict[item.Id].ParentId].ChildrenId.Remove(item.Id);
+                    if (Dict[item.Id].ParentId != null) Dict[(int)Dict[item.Id].ParentId].ChildrenId.Remove(item.Id);
 
-                    if (item.ParentId != null)
-                    {
-                        Dict[(int)item.ParentId].ChildrenId.Add(item.Id);
-                    }
+                    if (item.ParentId != null) Dict[(int)item.ParentId].ChildrenId.Add(item.Id);
+                    Dict[item.Id].ParentId = item.ParentId;
                 }
+                else return false;
+
                 Dict[item.Id].Name = item.Name;
                 Dict[item.Id].Description = item.Description;
-                Dict[item.Id].ParentId = item.ParentId;
 
                 return true;
             }

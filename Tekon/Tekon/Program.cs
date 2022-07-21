@@ -22,14 +22,14 @@ app.MapGet("/TekonAPI/{id}", async (int id, Controller controller) =>
 
 app.MapPost("/TekonAPI", async (Item todo, Controller controller) =>
 {
-    if (await Task.Run(() => controller.AddItem(todo, Dict)) == false) return Results.Text("Ёлемент с таким ID уже существует!");
+    if (await Task.Run(() => controller.AddItem(todo, Dict)) == false) return Results.Text("Ёлемент не был добавлен!");
 
     return Results.Text("Ёлемент успешно добавлен!");
 });
 
 app.MapPut("/TekonAPI", async (Item inputTodo, Controller controller) =>
 {
-    if (await Task.Run(() => controller.UpdateItem(inputTodo, Dict)) == false) return Results.Text("Ёлемента с таким ID не существует!");
+    if (await Task.Run(() => controller.UpdateItem(inputTodo, Dict)) == false) return Results.Text("Ёлемент не был обновлЄн!");
 
     return Results.Text("Ёлемент успешно обновлЄн!");
 });
